@@ -4,7 +4,7 @@ The base code main.py is from https://github.com/pytorch/examples/tree/main/imag
 
 The hpu version is main_hpu.py.
 
-
+---------------------------------------------------
 
 To run resnet50 on single card fp32:
 
