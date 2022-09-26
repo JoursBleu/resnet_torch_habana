@@ -4,6 +4,8 @@ The base code main.py is from https://github.com/pytorch/examples/tree/main/imag
 
 The hpu version is main_hpu.py.
 
+
+
 To run resnet50 on single card fp32:
 
 python3 main_hpu.py -a resnet50 --use-hpu /software/datasets/imagenet_vm/
