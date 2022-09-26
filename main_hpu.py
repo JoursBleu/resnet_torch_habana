@@ -81,6 +81,7 @@ parser.add_argument('--multiprocessing-distributed', action='store_true',
                          'multi node data parallel training')
 parser.add_argument('--dummy', action='store_true', help="use fake data to benchmark")
 parser.add_argument('--use-hpu', action='store_true', help="use hpu")
+parser.add_argument('--use-hmp', action='store_true', help="use hmp")
 parser.add_argument('--bf16-config-path', default='', type=str,
                     help='bf16 config path')
 parser.add_argument('--fp32-config-path', default='', type=str,
@@ -328,7 +329,8 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
 
     # switch to train mode
     model.train()
-    hmp.convert(opt_level="O1", bf16_file_path=args.bf16_config_path, fp32_file_path=args.fp32_config_path, isVerbose=False)
+    if args.use_hmp:
+        hmp.convert(opt_level="O1", bf16_file_path=args.bf16_config_path, fp32_file_path=args.fp32_config_path, isVerbose=False)
 
     end = time.time()
     for i, (images, target) in enumerate(train_loader):
@@ -361,7 +363,10 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
         loss.backward()
         if args.use_hpu:
             htcore.mark_step()
-        with hmp.disable_casts():
+        if args.use_hmp:
+            with hmp.disable_casts():
+                optimizer.step()
+        else:
             optimizer.step()
         if args.use_hpu:
             htcore.mark_step()
