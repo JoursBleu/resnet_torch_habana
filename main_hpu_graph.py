@@ -89,6 +89,7 @@ parser.add_argument('--fp32-config-path', default='', type=str,
                     help='fp32 config path')
 
 best_acc1 = 0
+init_graph = True
 
 
 def main():
@@ -317,9 +318,8 @@ def main_worker(gpu, ngpus_per_node, args):
                 'scheduler' : scheduler.state_dict()
             }, is_best)
 
-init_graph = True
-
 def train(train_loader, model, criterion, optimizer, epoch, args):
+    global init_graph
     batch_time = AverageMeter('Time', ':6.3f')
     data_time = AverageMeter('Data', ':6.3f')
     losses = AverageMeter('Loss', ':.4e')
